@@ -95,20 +95,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         //do the conversion
-        if(unit1 == unit2){
-            Identity();
-        }
-        else{
-
-        }
+        Convert1to2(unit1, unit2);
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
     }
 
-    public void Identity(){
+    public void Convert2to1(String unit1, String unit2){
+
+    }
+
+    public void Convert1to2(String unit1, String unit2){
+        float factor1 = getFactor(unit1);
+        float factor2 = getFactor(unit2);
+
         float value1 = new Float(text1.getText().toString());
-        float value2 = new Float(text2.getText().toString());
+
+        float value = (factor1 * value1)/factor2;
+
+        text2.setText(Float.toString(value));
+    }
+
+    public float getFactor(String unit){
+        unit = unit.toLowerCase();
+        switch(unit){
+            case "meters":
+                return 1;
+            case "centimeters":
+                return .01f;
+            case "millimeters":
+                return .001f;
+            case "kilometers":
+                return 1000;
+            case "miles":
+                return 1609.34f;
+            case "inches":
+                return .0254f;
+            case "feet":
+                return .3048f;
+            case "yards":
+                return .9144f;
+            case "nautical miles":
+                return 1852;
+        }
+        return 1;
     }
 }
