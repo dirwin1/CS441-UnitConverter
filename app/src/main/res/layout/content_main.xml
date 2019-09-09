@@ -32,13 +32,12 @@
                 android:gravity="center"
                 android:hint="Value1"
                 android:text="0"
-                android:inputType="number" />
+                android:inputType="numberDecimal" />
 
             <Spinner
                 android:id="@+id/spinner1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:drawable/btn_dropdown"
                 android:spinnerMode="dropdown"/>
         </LinearLayout>
 
@@ -64,13 +63,12 @@
                 android:gravity="center"
                 android:hint="Value2"
                 android:text="0"
-                android:inputType="number" />
+                android:inputType="numberDecimal" />
 
             <Spinner
                 android:id="@+id/spinner2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@android:drawable/btn_dropdown"
                 android:spinnerMode="dropdown"/>
         </LinearLayout>
     </LinearLayout>

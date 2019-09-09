@@ -16,12 +16,15 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
     private EditText text1, text2;
-    private String unit1, unit2;
+    private String unit1 = "1";
+    private String unit2 = "1";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +32,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
 
         //get spinners
         Spinner spinner1 = (Spinner) findViewById(R.id.spinner1);
@@ -57,13 +51,44 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //get text
         text1 = (EditText) findViewById(R.id.txtItem1);
         text2 = (EditText) findViewById(R.id.txtItem2);
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        //text change listener
+        text1.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (getCurrentFocus() == text1) {
+                    // is only executed if the EditText was directly changed by the user
+                    Convert1to2();
+                }
+            }
+        });
+
+        text2.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (getCurrentFocus() == text2) {
+                    // is only executed if the EditText was directly changed by the user
+                    Convert2to1();
+                }
+            }
+        });
+
     }
 
     @Override
@@ -95,22 +120,50 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
 
         //do the conversion
-        Convert1to2(unit1, unit2);
+        Convert1to2();
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
     }
 
-    public void Convert2to1(String unit1, String unit2){
+    public void Convert2to1(){
+        if(text2.getText().length() == 0) return;
 
-    }
-
-    public void Convert1to2(String unit1, String unit2){
         float factor1 = getFactor(unit1);
         float factor2 = getFactor(unit2);
 
-        float value1 = new Float(text1.getText().toString());
+        float value2 = 0;
+
+        try
+        {
+            value2 = Float.parseFloat(text2.getText().toString());
+        }
+        catch(Error e)
+        {
+            value2 = 0;
+        }
+
+        float value = (factor2 * value2)/factor1;
+
+        text1.setText(Float.toString(value));
+    }
+
+    public void Convert1to2(){
+        if(text1.getText().length() == 0) return;
+        float factor1 = getFactor(unit1);
+        float factor2 = getFactor(unit2);
+
+        float value1 = 0; //Float.parseFloat(text1.getText().toString());
+
+        try
+        {
+            value1 = Float.parseFloat(text1.getText().toString());
+        }
+        catch(Error e)
+        {
+
+        }
 
         float value = (factor1 * value1)/factor2;
 
