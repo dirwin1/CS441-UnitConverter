@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="units_array">
+        <item>Length</item>
+        <item>Weight</item>
+        <item>Time</item>
+    </string-array>
+
+    <string-array name="length_array">
         <item>Inches</item>
         <item>Feet</item>
         <item>Yards</item>
@@ -10,5 +16,26 @@
         <item>Centimeters</item>
         <item>Meters</item>
         <item>Kilometers</item>
+    </string-array>
+
+    <string-array name="weight_array">
+        <item>Grams</item>
+        <item>Kilograms</item>
+        <item>Metric Tons</item>
+        <item>Imperial Tons</item>
+        <item>US Tons</item>
+        <item>Ounces</item>
+        <item>Pounds</item>
+    </string-array>
+
+    <string-array name="time_array">
+        <item>Milliseconds</item>
+        <item>Seconds</item>
+        <item>Minutes</item>
+        <item>Hours</item>
+        <item>Days</item>
+        <item>Weeks</item>
+        <item>Months</item>
+        <item>Years</item>
     </string-array>
 </resources>

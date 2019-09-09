@@ -10,79 +10,98 @@
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
 
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <LinearLayout
+        <Spinner
+            android:id="@+id/spinner3"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:textAlignment="center"
+            android:spinnerMode="dropdown"
+            android:padding="10dp" />
 
-            <EditText
-                android:id="@+id/txtItem1"
-                android:layout_width = "fill_parent"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:hint="Value1"
-                android:text="0"
-                android:inputType="numberDecimal" />
 
-            <Spinner
-                android:id="@+id/spinner1"
-                android:layout_width="match_parent"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"/>
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/txtItem1"
+                    android:layout_width = "fill_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Value1"
+                    android:text="0"
+                    android:inputType="numberDecimal" />
+
+                <Spinner
+                    android:id="@+id/spinner1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"/>
+            </LinearLayout>
+
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.5"
+
+                android:src="@drawable/equals_icon2"/>
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <EditText
+                    android:id="@+id/txtItem2"
+                    android:layout_width = "fill_parent"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:hint="Value2"
+                    android:text="0"
+                    android:inputType="numberDecimal" />
+
+                <Spinner
+                    android:id="@+id/spinner2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:spinnerMode="dropdown"/>
+            </LinearLayout>
         </LinearLayout>
 
+        <com.jjoe64.graphview.GraphView
+            android:layout_width = "match_parent"
+            android:layout_height = "200dip"
+            android:id = "@+id/graph"/>
 
         <ImageView
+            android:id="@+id/main_image"
+
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1.5"
 
-            android:src="@drawable/equals_icon2"/>
-
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
-
-            <EditText
-                android:id="@+id/txtItem2"
-                android:layout_width = "fill_parent"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:hint="Value2"
-                android:text="0"
-                android:inputType="numberDecimal" />
-
-            <Spinner
-                android:id="@+id/spinner2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:spinnerMode="dropdown"/>
-        </LinearLayout>
+            android:src="@drawable/image_0"/>
     </LinearLayout>
 
-    <ImageView
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:id="@+id/main_image"
 
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
 
-        android:src="@drawable/image_0"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

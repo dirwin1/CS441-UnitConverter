@@ -1,37 +1,38 @@
 package com.example.unitconverter;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.jjoe64.graphview.GraphView;
+import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.LineGraphSeries;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.View;
-import android.view.Menu;
-import android.view.MenuItem;
-
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Spinner;
-import android.widget.ArrayAdapter;
-import android.widget.AdapterView;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.animation.*;
-import android.os.Handler;
-import android.widget.AdapterView.OnItemSelectedListener;
-
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
 
+    private Spinner spinner1, spinner2, spinner3;
     private EditText text1, text2;
+    private String unitType = "length";
     private String unit1 = "1";
     private String unit2 = "1";
     private Animation animFadeIn, animFadeOut;
     private ImageView mainImage;
     private int mInterval = 5000;
     private Handler mHandler;
+    private GraphView graph;
     int imageNum = 0;
 
     @Override
@@ -41,20 +42,32 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //get spinners
-        Spinner spinner1 = (Spinner) findViewById(R.id.spinner1);
-        // Create an ArrayAdapter using the string array and a default spinner layout
+
+        //unit spinners
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.units_array, android.R.layout.simple_spinner_item);
+                R.array.length_array, android.R.layout.simple_spinner_item);
         // Specify the layout to use when the list of choices appears
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        // Apply the adapter to the spinner
+
+        // Apply the adapter to the spinners
+        spinner1 = (Spinner) findViewById(R.id.spinner1);
         spinner1.setAdapter(adapter);
         spinner1.setOnItemSelectedListener(this);
 
-        Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
+        spinner2 = (Spinner) findViewById(R.id.spinner2);
         spinner2.setAdapter(adapter);
         spinner2.setOnItemSelectedListener(this);
+
+        //unit spinners
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(this,
+                R.array.units_array, android.R.layout.simple_spinner_item);
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner3 = (Spinner) findViewById(R.id.spinner3);
+        spinner3.setAdapter(adapter2);
+        spinner3.setOnItemSelectedListener(this);
+
 
         //get imageview
         mainImage = (ImageView) findViewById(R.id.main_image);
@@ -140,6 +153,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         //handler
         mHandler = new Handler();
         StartRepeatingTask();
+
+        //get graph
+        graph = (GraphView) findViewById(R.id.graph);
     }
 
     @Override
@@ -162,20 +178,49 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch(parent.getId()){
             case R.id.spinner1:
                 unit1 = parent.getItemAtPosition(pos).toString();
-                //text1.setText(unit1);
+                //do the conversion
+                Convert1to2();
                 break;
             case R.id.spinner2:
                 unit2 = parent.getItemAtPosition(pos).toString();
-                //text2.setText(unit2);
+                //do the conversion
+                Convert1to2();
+                break;
+            case R.id.spinner3:
+                unitType = parent.getItemAtPosition(pos).toString().toLowerCase();
+                SwapUnitType();
                 break;
         }
-
-        //do the conversion
-        Convert1to2();
     }
 
     public void onNothingSelected(AdapterView<?> parent) {
         // Another interface callback
+    }
+
+    public void SwapUnitType(){
+        ArrayAdapter<CharSequence> adapter = null;
+        switch(unitType){
+            case "length":
+                //unit spinners
+                adapter = ArrayAdapter.createFromResource(this, R.array.length_array, android.R.layout.simple_spinner_item);
+                break;
+            case "weight":
+                //unit spinners
+                adapter = ArrayAdapter.createFromResource(this, R.array.weight_array, android.R.layout.simple_spinner_item);
+                break;
+            case "time":
+                //unit spinners
+                adapter = ArrayAdapter.createFromResource(this, R.array.time_array, android.R.layout.simple_spinner_item);
+                break;
+        }
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        spinner1.setAdapter(adapter);
+        spinner2.setAdapter(adapter);
+
+        Convert1to2();
     }
 
     public void Convert2to1(){
@@ -195,9 +240,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             value2 = 0;
         }
 
-        float value = (factor2 * value2)/factor1;
+        float value = value2 * factor2 /factor1;
 
         text1.setText(Float.toString(value));
+
+        UpdateGraph(factor1, factor2);
     }
 
     public void Convert1to2(){
@@ -216,10 +263,28 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         }
 
-        float value = (factor1 * value1)/factor2;
+        float value = value1 * factor1 / factor2;
 
         text2.setText(Float.toString(value));
+
+        UpdateGraph(factor1, factor2);
     }
+
+    public void UpdateGraph(float factor1, float factor2){
+        graph.removeAllSeries();
+        LineGraphSeries <DataPoint> series = new LineGraphSeries< >(new DataPoint[] {
+                new DataPoint(0, 0),
+                new DataPoint(1, factor1)
+        });
+        graph.addSeries(series);
+
+        LineGraphSeries <DataPoint> series2 = new LineGraphSeries< >(new DataPoint[] {
+                new DataPoint(0, 0),
+                new DataPoint(1, factor2)
+        });
+        graph.addSeries(series2);
+    }
+
 
     public float getFactor(String unit){
         unit = unit.toLowerCase();
@@ -242,6 +307,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 return .9144f;
             case "nautical miles":
                 return 1852;
+
+            case "kilograms":
+                return 1;
+            case "grams":
+                return .001f;
+            case "metric tons":
+                return 1000;
+            case "imperial tons":
+                return 1016.05f;
+            case "us tons":
+                return 907.185f;
+            case "pounds":
+                return 0.453592f;
+            case "ounces":
+                return 0.0283495f;
+
+            case "milliseconds":
+                return .001f;
+            case "seconds":
+                return 1;
+            case "minutes":
+                return 60;
+            case "hours":
+                return 3600;
+            case "days":
+                return 86400;
+            case "weeks":
+                return 604800;
+            case "months":
+                return 2.628e+6f;
+            case "years":
+                return 3.154e+7f;
         }
         return 1;
     }
