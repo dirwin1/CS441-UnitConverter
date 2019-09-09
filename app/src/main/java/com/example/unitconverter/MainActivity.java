@@ -13,11 +13,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
 import android.widget.AdapterView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.animation.*;
+import android.os.Handler;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
@@ -25,6 +28,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText text1, text2;
     private String unit1 = "1";
     private String unit2 = "1";
+    private Animation animFadeIn, animFadeOut;
+    private ImageView mainImage;
+    private int mInterval = 5000;
+    private Handler mHandler;
+    int imageNum = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Spinner spinner2 = (Spinner) findViewById(R.id.spinner2);
         spinner2.setAdapter(adapter);
         spinner2.setOnItemSelectedListener(this);
+
+        //get imageview
+        mainImage = (ImageView) findViewById(R.id.main_image);
+
+        //get animations
+        animFadeOut = AnimationUtils.loadAnimation(this, R.anim.fadeout);
+        animFadeIn = AnimationUtils.loadAnimation(this, R.anim.fadein);
 
         //get text
         text1 = (EditText) findViewById(R.id.txtItem1);
@@ -89,6 +104,42 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         });
 
+        //animation listener
+        animFadeOut.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                imageNum = (imageNum + 1) % 3;
+                switch(imageNum){
+                    case 0:
+                        mainImage.setImageResource(R.drawable.image_0);
+                        break;
+                    case 1:
+                        mainImage.setImageResource(R.drawable.image_1);
+                        break;
+                    case 2:
+                        mainImage.setImageResource(R.drawable.image_2);
+                        break;
+                }
+
+                animFadeIn.reset();
+                mainImage.clearAnimation();
+                mainImage.startAnimation(animFadeIn);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+
+        //handler
+        mHandler = new Handler();
+        StartRepeatingTask();
     }
 
     @Override
@@ -194,4 +245,38 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
         return 1;
     }
+
+    public void SwapPhoto(){
+        animFadeOut.reset();
+        mainImage.clearAnimation();
+        mainImage.startAnimation(animFadeOut);
+    }
+
+    void StartRepeatingTask() {
+        mStatusChecker.run();
+    }
+
+    void StopRepeatingTask() {
+        mHandler.removeCallbacks(mStatusChecker);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        StopRepeatingTask();
+    }
+
+    Runnable mStatusChecker = new Runnable() {
+        @Override
+        public void run() {
+            try {
+                SwapPhoto(); //this function can change value of mInterval.
+            } finally {
+                // 100% guarantee that this always happens, even if
+                // your update method throws an exception
+                mHandler.postDelayed(mStatusChecker, mInterval);
+            }
+        }
+    };
+
 }
